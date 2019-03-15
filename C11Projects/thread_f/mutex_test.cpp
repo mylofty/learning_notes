@@ -7,6 +7,7 @@
 #include<memory>
 
 std::mutex g_lock;
+// use raw lock,unlock
 void fun(int i, std::string name)
 {
 	g_lock.lock();
@@ -14,6 +15,15 @@ void fun(int i, std::string name)
 	std::this_thread::sleep_for(std::chrono::seconds(5));
 	std::cout << "thread[" << i << "] will finish" << std::endl;
 	g_lock.unlock();
+}
+
+// use lock_guard
+void fun2(int i, std::string name)
+{
+	std::lock_guard<std::mutex> locker(g_lock);
+	std::cout << "thread[" << i << "], name is "<< name << std::endl;
+	std::this_thread::sleep_for(std::chrono::seconds(5));
+	std::cout << "thread[" << i << "] will finish" << std::endl;
 }
 
 int main()

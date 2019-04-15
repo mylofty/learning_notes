@@ -1,7 +1,7 @@
 # opencv 准备
 ## 一、安装opencv
 1、去官网下载opencv压缩包，解压之后进入文件夹目录
-
+change by master branch
 2、执行下面脚本
 ```shell
 mkdir build

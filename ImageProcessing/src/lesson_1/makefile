@@ -11,7 +11,7 @@ mat.o : mat.cpp
 image_operation.o : image_operation.cpp
 	g++ -o image_operation.o image_operation.cpp $(INCLUDES) $(LIBDIRS) $(LIBS) -Wl,-rpath=$(SOPATH)
 image_sobel.o : image_sobel.cpp
-	g++ -o image_sobel.o image_sobel.cpp $(INCLUDES) $(LIBDIRS) $(LIBS) -Wl,-rpath=$(SOPATH)
+	g++ -o image_sobel.o image_sobel.cpp $(INCLUDES) $(LIBDIRS) $(LIBS)
 
 
 .PHONY: clean

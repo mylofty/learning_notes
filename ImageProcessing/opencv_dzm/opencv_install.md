@@ -79,5 +79,9 @@ clean:
 	rm *.o
 ```
 
+## 4、运行时问题
+当运行时遇到以前所说问题之时，可以考虑将库文件（.so）目录添加至系统目录
+系统链接库目录是在/etc/ld.so.conf中，该文件引用/etc/ld.so.conf.d/中的所有conf文件，所以，只需要增加一个conf文件，将/home/dzm/opencv3_4/lib64保存其中。之后执行sudo ldconfig完成修改即可
+
 
 

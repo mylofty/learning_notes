@@ -29,12 +29,12 @@ public:
 	/**
 	*	视频分析算法
 	**/
-	int analysis();
+	int analysis(int during);
 
 	/**
 	* 该函数进视频分析放入另外一个线程中
 	*/
-	std::thread analysisThread();
+	std::thread analysisThread(int during);
 
 
 private:
@@ -79,11 +79,10 @@ int Camera<T>::saveAVIRealTime(std::string folder, int during)
 	}
 	// 循环读取每一帧数据并保存
 	cv::Mat frame;
-	
+	double startTime = (double)cv::getTickCount();
 	double tickFrequency = (double)cv::getTickFrequency();
 	for(; ; )
 	{
-		double startTime = (double)cv::getTickCount();
 		videoCap.read(frame);
 		///////////// DEBUG 显示  ////////////////////////////// 
 		// cv::Mat small_frame;
@@ -98,19 +97,18 @@ int Camera<T>::saveAVIRealTime(std::string folder, int during)
 		/////////////////////////////////////////////////////
 		writer.write(frame);
 		double endTime = (double)cv::getTickCount();
-		double time = (endTime - startTime)/tickFrequency*1000;
-		std::cout << "save avi " << time << "ms " << std::endl;
-		// if(time > during)
-		// {
-		// 	std::cout << "success to save " << time << " seconds video" << std::endl;
-		// 	break;
-		// }
+		double time = (endTime - startTime)/tickFrequency;
+		if(time > during)
+		{
+			std::cout <<"thread" << std::this_thread::get_id()  <<  "\tsuccess to save " << time << " seconds video" << std::endl;
+			break;
+		}
 	}
 	return CC::SAVE_AVI_SUCCESS;
 }
 
 template<class T>
-int  Camera<T>::analysis()
+int  Camera<T>::analysis(int during)
 {
 	cv::VideoCapture videoCap;
 	// 打开rtsp视频流
@@ -127,24 +125,22 @@ int  Camera<T>::analysis()
 
 	cv::Mat origin_frame;
 	double tickFrequency = (double)cv::getTickFrequency();
+	long  pic_name_id = 100;
+	double startTime = (double)cv::getTickCount();
 	for(long long iter = 0; ; iter++ )
 	{
 		videoCap.read(origin_frame);
-		////////////////////	analysis 均值平滑	60ms /////////////////////////////
-		cv::Mat blurframe, small_blurframe, small_origin_frame;
-		double startTime = (double)cv::getTickCount();
-		if(iter % 1 == 0)			//每10帧处理一次
+		////////////////////	analysis 镜像  /////////////////////////////
+		cv::Mat blurframe, small_blurframe, small_origin_frame, origin_image_fliped;		
+		if(iter % 10 == 0)			//每10帧处理一次
 		{
 			iter = 0;
-			for(int i=1; i < 31; i=i+2)
-			{
-				cv::blur(origin_frame, blurframe, cv::Size(i, i), cv::Point(-1, -1));
-			}
-			cv::resize(origin_frame, small_origin_frame, cv::Size((int)videoCap.get(cv::CAP_PROP_FRAME_WIDTH)/3, (int)videoCap.get(cv::CAP_PROP_FRAME_HEIGHT)/3), 0, 0);
-			cv::resize(blurframe, small_blurframe, cv::Size((int)videoCap.get(cv::CAP_PROP_FRAME_WIDTH)/3, (int)videoCap.get(cv::CAP_PROP_FRAME_HEIGHT)/3), 0, 0);
-			cv::imshow("small_origin_frame", small_origin_frame);
+			cv::flip(origin_frame, origin_image_fliped, -1);
+			// cv::imshow("small_origin_frame", origin_image_fliped);
+			std::string picName = "data2/images" ;
+			picName = picName + std::to_string(pic_name_id++) + ".jpg";
+			cv::imwrite(picName, origin_image_fliped);
 		}
-		
 		if(cv::waitKey(1) >= 0)
 		{
 			std::cout << "success break by keypress" << std::endl;
@@ -152,8 +148,13 @@ int  Camera<T>::analysis()
 		}
 		//////////////////////////////////////////////////////////////////////////////////
 		double endTime = (double)cv::getTickCount();
-		double time = (endTime - startTime)/tickFrequency * 1000;
-		// std::cout << "analysis one picture use time " << time << "ms" << std::endl;
+		double time = (endTime - startTime)/tickFrequency;
+		if(time > during)
+		{
+			std::cout << "thread is is:" << std::this_thread::get_id() << " \tanalysis picture use time " << time << "ms" << std::endl;
+			break;
+		}
+		
 
 	}
 	return CC::ANALYSIS_SUCCESS;
@@ -166,7 +167,7 @@ std::thread Camera<T>::saveAVIRealTimeThread(std::string folder, int during)
 }
 
 template<class T>
-std::thread Camera<T>::analysisThread()
+std::thread Camera<T>::analysisThread(int during)
 {
-	return std::thread(&Camera<T>::analysis,this);
+	return std::thread(&Camera<T>::analysis,this, during);
 }

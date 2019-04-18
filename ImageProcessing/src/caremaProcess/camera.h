@@ -1,3 +1,6 @@
+#ifndef _CAMERA_H_
+#define _CAMERA_H_
+
 #include<iostream>
 #include<thread>
 #include<Param.h>
@@ -178,3 +181,5 @@ std::thread Camera<T>::analysisThread(std::string folder, int during)
 	auto analysisFun= std::bind(&Camera<T>::analysis, this, std::placeholders::_1, std::placeholders::_2);
 	return std::thread(analysisFun, folder, during);
 }
+
+#endif

@@ -6,7 +6,7 @@ import cv2
 # user: admin
 # pwd: admin
 # ip: 192.168.1.108
-video_cap = cv2.VideoCapture(0)#"rtsp://admin:admin@192.168.1.108/cam/realmonitor?channel=1&subtype=0")
+video_cap = cv2.VideoCapture("rtsp://admin:admin@192.168.1.108/cam/realmonitor?channel=1&subtype=0")#"rtsp://admin:admin@192.168.1.108/cam/realmonitor?channel=1&subtype=0")
 
 width =  int(video_cap.get(3))
 height = int(video_cap.get(4))

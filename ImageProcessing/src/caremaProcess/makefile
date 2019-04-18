@@ -9,9 +9,9 @@ singleThreadProcess : singleThreadProcess.cpp
 
 
 multiThreadProcess.out : multiThreadProcess.o
-	g++ multiThreadProcess.o -o multiThreadProcess.out ${INCLUDES} ${LIBDIRS} ${LIBS}
-multiThreadProcess.o : multiThreadProcess.cpp
-	g++ -c multiThreadProcess.cpp -o multiThreadProcess.o ${INCLUDES} ${LIBDIRS} ${LIBS}
+	g++ multiThreadProcess.o -o multiThreadProcess.out ${LIBDIRS} ${LIBS}
+multiThreadProcess.o : multiThreadProcess.cpp camera.h
+	g++ -c multiThreadProcess.cpp -o multiThreadProcess.o ${INCLUDES} 
 # camera.o : camera.cpp
 # 	g++ -c camera.cpp -o camera.o ${INCLUDES} ${LIBDIRS} ${LIBS}
 

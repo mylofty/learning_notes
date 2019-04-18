@@ -1,6 +1,8 @@
 #include<camera.h>
 #include<iostream>
+#include<sstream>
 #include<Param.h>
+
 template<class T>
 Camera<T>::Camera(T url, int id)
 {
@@ -23,9 +25,16 @@ int Camera<T>::saveAVIRealTime(std::string folder, int during)
 	cv::Size size = cv::Size((int)videoCap.get(cv::CAP_PROP_FRAME_WIDTH), (int)videoCap.get(cv::CAP_PROP_FRAME_HEIGHT));
 	float fps = videoCap.get(cv::CAP_PROP_FPS);
 	std::cout << "camera " << this->id << " open success! thread_id is " << std::this_thread::get_id()<<" \n video width, height, fps is " << size << ", " << fps << std::endl;
-	//打开视频文件写入
-	std::string filename = "";
-	filename = folder + "/orgin_live.avi";
+	
+	/////////////////////////////////处理文件名和文件名//////////////////////////////////////////////////
+	mkdir(folder.c_str(), S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);					//创建文件夹folder
+	auto t = std::chrono::system_clock::to_time_t(std::chrono::system_clock::now() );			//生成文件名
+	std::stringstream ss;
+	ss << std::put_time(std::localtime(&t), "%y-%m-%d-%H-%M");
+	std::string filename;
+	ss >> filename;
+	filename = folder + "/" + filename + "orgin_live.avi";
+	///////////////////////////////////保存实时视频到avi中去//////////////////////////////////////////////
 	writer.open(filename, cv::VideoWriter::fourcc('M', 'J', 'P', 'G'), fps, size);
 	if(!writer.isOpened())
 	{
@@ -34,11 +43,10 @@ int Camera<T>::saveAVIRealTime(std::string folder, int during)
 	}
 	// 循环读取每一帧数据并保存
 	cv::Mat frame;
-	
+	double startTime = (double)cv::getTickCount();
 	double tickFrequency = (double)cv::getTickFrequency();
 	for(; ; )
 	{
-		double startTime = (double)cv::getTickCount();
 		videoCap.read(frame);
 		///////////// DEBUG 显示  ////////////////////////////// 
 		// cv::Mat small_frame;
@@ -54,12 +62,12 @@ int Camera<T>::saveAVIRealTime(std::string folder, int during)
 		writer.write(frame);
 		double endTime = (double)cv::getTickCount();
 		double time = (endTime - startTime)/tickFrequency*1000;
-		std::cout << "save avi " << time << "ms " << std::endl;
-		// if(time > during)
-		// {
-		// 	std::cout << "success to save " << time << " seconds video" << std::endl;
-		// 	break;
-		// }
+		std::cout << "thread_id is " << std::this_thread::get_id() << ",save avi " << time << "ms " << std::endl;
+		if(time > during)
+		{
+			std::cout << "success to save " << time << " seconds video" << std::endl;
+			break;
+		}
 	}
 	return CC::SAVE_AVI_SUCCESS;
 }
@@ -88,7 +96,7 @@ int  Camera<T>::analysis()
 		////////////////////	analysis 均值平滑	60ms /////////////////////////////
 		cv::Mat blurframe, small_blurframe, small_origin_frame;
 		double startTime = (double)cv::getTickCount();
-		if(iter % 1 == 0)			//每10帧处理一次
+		if(iter % 10 == 0)			//每10帧处理一次
 		{
 			iter = 0;
 			for(int i=1; i < 31; i=i+2)

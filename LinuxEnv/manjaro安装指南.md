@@ -50,7 +50,7 @@ XDG_VIDEOS_DIR="$HOME/Videos"
 ```
 
 ## 二、基础软件安装
-### 安装浏览器、编辑器
+### 1 安装浏览器、编辑器
 ```bash
 #安装Chrome
 sudo pacman -S google-chrome
@@ -73,7 +73,7 @@ export XMODIFIERS="@im=fcitx"
 ```
 重启生效
 
-###3 安装shadowsocks
+### 3 安装shadowsocks
 
 ```bash
 sudo pacman -Sy --noconfirm shadowsocks-libev

@@ -136,7 +136,7 @@ Mat& ScanImageAndReduceRandomAccess(Mat& I, const uchar* const table)
          for( int i = 0; i < I.rows; ++i)
             for( int j = 0; j < I.cols; ++j )
                {
-                   _I(i,j)[0] = table[_I(i,j)[0]];
+                   _I(i,j)[0] = table[_I(i,j)[0]];  // 当然也可以用 I.at<cv::Vec3b>(i,j)[0]
                    _I(i,j)[1] = table[_I(i,j)[1]];
                    _I(i,j)[2] = table[_I(i,j)[2]];
             }

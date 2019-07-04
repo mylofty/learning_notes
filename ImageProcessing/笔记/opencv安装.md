@@ -42,7 +42,7 @@ main.o: main.cpp
 ```
 编译成功，运行时需要增加链接库目录，可以通过设置环境变量
 ```
-export LD_LIBRARY_PATH=$:/home/dzm/opencv3_4/lib64
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/dzm/opencv3_4/lib64
 ```
 运行成功
 
@@ -57,7 +57,7 @@ main.o : main.cpp
 ```
 编译成功，运行时需要增加链接库目录，可以通过设置环境变量
 ```
-export LD_LIBRARY_PATH=$:/home/dzm/opencv3_4/lib64
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/home/dzm/opencv3_4/lib64
 ```
 运行成功
 

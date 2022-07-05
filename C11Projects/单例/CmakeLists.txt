@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.10)
+
+SET(CMAKE_CXX_STANDARD 11)
+
+add_executable(singletonC11 singleton_c11.cpp)
+add_executable(singletonC98 singleton_c98.cpp)

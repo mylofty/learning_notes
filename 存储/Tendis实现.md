@@ -9,8 +9,8 @@ Tendis冷热混合存储方案
 ![img](./img/tendis_write.webp)
 1. 从 Redis 读取数据 。
 2. 如果命中，那么就将数据返回给应用程序。
-3. 如果未命中，则返回数据不存在
-4. 如果数据已落地，阻塞当前客户端， Redis 负责将 Key 从 Tendisplus 中恢复，然后返回给用户。
+3. 如果redis中key不存在，则返回数据不存在
+4. 如果未命中(key存在但数据已落地)，阻塞当前客户端， Redis 负责将 Key 从 Tendisplus 中恢复，然后返回给用户。
 
 ## 写数据
 ![img](./img/tendis_read.webp)
